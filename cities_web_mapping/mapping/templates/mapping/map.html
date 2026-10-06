@@ -1,0 +1,54 @@
+{% extends '../spatial_analysis/base.html' %}
+
+{% block title %}Hello Map Dublin{% endblock %}
+
+{% block extra_head %}
+<style>
+    #map {
+        width: 100%;
+        height: 80vh;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div id="map"></div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const map = L.map('map').setView([{{ dublin_lat }}, {{ dublin_lon }}], 13);
+    
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors',
+        maxZoom: 19
+    }).addTo(map);
+    
+    const markers = [
+        {
+            lat: 53.3432,
+            lon: -6.2575,
+            name: 'Trinity College Dublin',
+            popup: 'Trinity College Dublin - Founded 1592'
+        },
+        {
+            lat: 53.3414,
+            lon: -6.2725,
+            name: 'Dublin Castle',
+            popup: 'Dublin Castle - Historic seat of power'
+        },
+        {
+            lat: 53.3416,
+            lon: -6.2831,
+            name: 'Temple Bar',
+            popup: 'Temple Bar - Historic neighborhood'
+        }
+    ];
+    
+    markers.forEach(function(marker) {
+        L.marker([marker.lat, marker.lon])
+            .addTo(map)
+            .bindPopup('<b>' + marker.name + '</b><br>' + marker.popup);
+    });
+</script>
+{% endblock %}
