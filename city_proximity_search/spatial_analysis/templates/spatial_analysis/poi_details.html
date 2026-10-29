@@ -1,0 +1,71 @@
+{% extends 'spatial_analysis/base.html' %}
+
+{% block title %}{{ poi.name }} - Dublin Spatial Analysis{% endblock %}
+
+{% block content %}
+<div class="my-4">
+    <!-- Back Button -->
+    <a href="{% url 'spatial_analysis:dashboard' %}" class="btn btn-secondary btn-sm mb-4">
+        &larr; Back to Dashboard
+    </a>
+
+    <!-- POI Main Card -->
+    <div class="card mb-4 shadow-sm">
+        <div class="card-body">
+            <h1 class="card-title fw-bold">{{ poi.poi_name }}</h1>
+            <h6 class="card-subtitle mb-3 text-secondary">{{ poi.poi_type|title }}</h6>
+            
+            {% if poi.description %}
+            <p class="card-text mb-4">{{ poi.description }}</p>
+            {% endif %}
+
+            <p class="mb-1"><strong>Rating:</strong> {{ poi.rating|default:"N/A" }}</p>
+            <p class="mb-1"><strong>Visitors/day:</strong> {{ poi.visitors_per_day|default:"N/A" }}</p>
+            
+            <!-- GeoDjango geom fields have x (longitude) and y (latitude) properties -->
+            <p class="mb-0"><strong>Location (lon, lat):</strong> {{ poi.geom.x|floatformat:4 }}, {{ poi.geom.y|floatformat:4 }}</p>
+        </div>
+    </div>
+
+    <!-- Nearby Roads Section -->
+    <div class="mb-4">
+        <h3 class="fw-bold mb-3">Nearby Roads (within 1 km)</h3>
+        <div class="table-responsive">
+            <table class="table align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th scope="col">Road Name</th>
+                        <th scope="col">Type</th>
+                        <th scope="col">Speed Limit</th>
+                        <th scope="col">Distance</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for road in nearby_roads %}
+                    <tr>
+                        <td>{{ road.road_name|default:"Unnamed Road" }}</td>
+                        <td>{{ road.road_type|title }}</td>
+                        <td>{{ road.speed_limit|default:"N/A" }} km/h</td>
+                        <!-- road.distance_m is a GeoDjango Distance measure, .m extracts the meter value -->
+                        <td>{{ road.distance_m.m|floatformat:0 }} m</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="text-muted py-3">No nearby roads found within 1 km.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Geometry (GeoJSON) Section -->
+    <div class="mb-5">
+        <h3 class="fw-bold mb-3">Geometry (GeoJSON)</h3>
+        <div class="bg-light p-3 rounded font-monospace">
+            <!-- Safe filter is used because poi_json contains raw JSON string data -->
+            <code>{{ poi_json|safe }}</code>
+        </div>
+    </div>
+</div>
+{% endblock %}
