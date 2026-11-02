@@ -146,3 +146,108 @@
     <script src="{% static 'js/map.js' %}"></script>
 </body>
 </html>
+
+
+
+
+
+
+
+<div class="control-panel">
+        <h3 style="margin-bottom: 10px;">Incident & Safety Search</h3>
+        <input type="text" id="searchInput" class="search-box" placeholder="Search hazards or regions...">
+        
+        <button id="resetBtn" class="btn-action btn-reset">Reset View</button>
+        <button id="nearest-search-btn" class="btn-action btn-search" type="button">Find 10 Nearest Hazards</button>
+        <button id="radius-search-btn" class="btn-action btn-search" type="button">Check 1 km Alert Radius</button>
+        <button id="openReportModalBtn" class="btn-action btn-report" type="button">+ Report New Hazard</button>
+
+        <label id="radius-control" class="d-none" for="radius-input" style="font-size: 12px; margin-top: 5px; display: block;">
+            Radius (km):
+            <input id="radius-input" type="number" min="0.1" max="20000" value="1.0" style="width: 100%; padding: 5px; margin-top: 2px;">
+        </label>
+
+        <p id="proximity-status" role="status" aria-live="polite" style="font-size: 12px; color: #666; margin-top: 8px;">
+            Choose a search mode or click any incident marker.
+        </p>
+
+        <div id="proximity-results" aria-live="polite" style="margin-top: 8px;"></div>
+        <div id="results" style="margin-top: 10px; max-height: 200px; overflow-y: auto;"></div>
+    </div>
+
+    <!-- Info Box -->
+    <div class="info-box">
+        <h4>System Status</h4>
+        <p>Active Incidents Loaded: <strong id="cityCount">0</strong></p>
+        <p>Click on hazard markers to view details or upvote safety reports.</p>
+    </div>
+
+    <!-- Loading Indicator -->
+    <div class="loading" id="loading">Processing spatial hazard data...</div>
+
+    <!-- Report Hazard Modal -->
+    <div id="reportModal" class="modal-overlay">
+        <div class="modal-content-custom">
+            <h4 style="margin-bottom: 12px; color: #dc3545;">Report Community Hazard</h4>
+            <form id="incidentForm">
+                <div style="margin-bottom: 10px;">
+                    <label style="font-size: 12px; font-weight: bold;">Title / Location</label>
+                    <input type="text" id="hazardTitle" class="search-box" style="margin-bottom:0;" required placeholder="e.g. Flooded Roadway">
+                </div>
+                <div style="margin-bottom: 10px;">
+                    <label style="font-size: 12px; font-weight: bold;">Category</label>
+                    <select id="hazardCategory" class="search-box" style="margin-bottom:0;">
+                        <option value="Flooding">Flooding</option>
+                        <option value="Fallen Tree">Fallen Tree</option>
+                        <option value="Road Hazard">Road Hazard</option>
+                        <option value="Power Outage">Power Outage</option>
+                    </select>
+                </div>
+                <div style="margin-bottom: 10px;">
+                    <label style="font-size: 12px; font-weight: bold;">Severity</label>
+                    <select id="hazardSeverity" class="search-box" style="margin-bottom:0;">
+                        <option value="low">Low</option>
+                        <option value="medium" selected>Medium</option>
+                        <option value="high">High</option>
+                        <option value="critical">Critical</option>
+                    </select>
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <label style="font-size: 12px; font-weight: bold;">Latitude & Longitude</label>
+                    <div style="display: flex; gap: 5px;">
+                        <input type="number" step="any" id="hazardLat" placeholder="Lat" class="search-box" style="margin-bottom:0;" required>
+                        <input type="number" step="any" id="hazardLng" placeholder="Lng" class="search-box" style="margin-bottom:0;" required>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 8px;">
+                    <button type="button" id="closeReportModalBtn" class="btn-action btn-search" style="margin-bottom:0;">Cancel</button>
+                    <button type="submit" class="btn-action btn-report" style="margin-bottom:0;">Submit Report</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <!-- Leaflet MarkerCluster JS -->
+    <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
+
+    <!-- Leaflet Heat JS -->
+    <script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
+
+    <!-- Modal Helper Script -->
+    <script>
+        document.getElementById('openReportModalBtn')?.addEventListener('click', () => {
+            document.getElementById('reportModal').style.display = 'flex';
+        });
+        document.getElementById('closeReportModalBtn')?.addEventListener('click', () => {
+            document.getElementById('reportModal').style.display = 'none';
+        });
+    </script>
+    
+    <!-- Custom Map Script -->
+    {% load static %}
+    <script src="{% static 'js/map.js' %}"></script>
+</body>
+</html>
